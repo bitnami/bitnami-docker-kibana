@@ -181,8 +181,9 @@ is_kibana_not_running() {
 #   Boolean
 #########################
 is_kibana_ready() {
+    local basePath=$(yq r $KIBANA_CONF_FILE "[server.basePath]")
     if is_kibana_running; then
-        local -r state="$(yq r - "status.overall.state" <<<"$(curl -s "127.0.0.1:${KIBANA_PORT_NUMBER}/api/status")")"
+        local -r state="$(yq r - "status.overall.state" <<<"$(curl -s "127.0.0.1:${KIBANA_PORT_NUMBER}${basePath}/api/status")")"
         [[ "$state" == "green" ]]
     else
         false
