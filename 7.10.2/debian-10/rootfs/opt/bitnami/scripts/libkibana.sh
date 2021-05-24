@@ -112,6 +112,24 @@ kibana_conf_set() {
 }
 
 ########################
+# Read a configuration setting value
+# Globals:
+#   KIBANA_*
+# Arguments:
+#   $1 - key
+# Returns:
+#   Outputs the key to stdout (Empty response if key is not set)
+#########################
+kibana_conf_get() {
+    local key="${1:?missing key}"
+
+    if [[ -r "$KIBANA_CONF_FILE" ]]; then
+        yq r "$KIBANA_CONF_FILE" "$key"
+    fi
+}
+
+
+########################
 # Configure/initialize Kibana
 # For backwards compatibility, it is allowed to specify the host and port in
 # different env-vars and this function will build the correct url.
@@ -181,7 +199,7 @@ is_kibana_not_running() {
 #   Boolean
 #########################
 is_kibana_ready() {
-    local basePath=$(yq r $KIBANA_CONF_FILE "[server.basePath]")
+    local basePath=$(kibana_conf_get "[server.basePath]")
     if is_kibana_running; then
         local -r state="$(yq r - "status.overall.state" <<<"$(curl -s "127.0.0.1:${KIBANA_PORT_NUMBER}${basePath}/api/status")")"
         [[ "$state" == "green" ]]
