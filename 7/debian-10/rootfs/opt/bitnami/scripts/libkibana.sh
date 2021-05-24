@@ -199,7 +199,11 @@ is_kibana_not_running() {
 #   Boolean
 #########################
 is_kibana_ready() {
-    local basePath=$(kibana_conf_get "[server.basePath]")
+    local basePath=
+	local rewriteBasePath=$(kibana_conf_get "[server.rewriteBasePath]")
+	if [[ "$rewriteBasePath" == "true" ]]; then
+		basePath=$(kibana_conf_get "[server.basePath]")
+	fi
     if is_kibana_running; then
         local -r state="$(yq r - "status.overall.state" <<<"$(curl -s "127.0.0.1:${KIBANA_PORT_NUMBER}${basePath}/api/status")")"
         [[ "$state" == "green" ]]
