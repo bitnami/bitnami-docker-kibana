@@ -230,7 +230,7 @@ wait_for_kibana_ready() {
     done
     if [[ "$retries" -eq 0 ]]; then
         error "Kibana is not available after ${KIBANA_WAIT_READY_MAX_RETRIES} retries"
-	    exit 1
+        exit 1
     fi
 }
 
