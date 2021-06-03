@@ -274,7 +274,7 @@ kibana_custom_init_scripts() {
 
         if is_boolean_yes "${KIBANA_INITSCRIPTS_START_SERVER}"; then
             # Binding to localhost to not give false positives for external connections
-            kibana_start_bg "--host" "127.0.0.1" "--log-file" "${KIBANA_LOGS_DIR}/init_scripts_start.log"
+            kibana_start_bg "--host" "127.0.0.1"
             wait_for_kibana_ready
         fi
 
