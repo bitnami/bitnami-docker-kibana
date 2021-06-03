@@ -230,6 +230,8 @@ wait_for_kibana_ready() {
     done
     if [[ "$retries" -eq 0 ]]; then
         error "Kibana is not available after ${KIBANA_WAIT_READY_MAX_RETRIES} retries"
+        info "Dumping $KIBANA_INIT_SCRIPT_LOG_FILE for additional diagnostics..."
+        cat $KIBANA_INIT_SCRIPT_LOG_FILE
         exit 1
     fi
 }
@@ -270,7 +272,7 @@ kibana_custom_init_scripts() {
 
         if is_boolean_yes "${KIBANA_INITSCRIPTS_START_SERVER}"; then
             # Binding to localhost to not give false positives for external connections
-            kibana_start_bg "--host" "127.0.0.1" "--log-file" "${KIBANA_LOGS_DIR}/init_scripts_start.log"
+            kibana_start_bg "--host" "127.0.0.1" "--log-file" "${KIBANA_INIT_SCRIPT_LOG_FILE}"
             wait_for_kibana_ready
         fi
 
